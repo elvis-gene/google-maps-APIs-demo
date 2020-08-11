@@ -1,0 +1,20 @@
+html, body {height: 100%; margin: 0; padding: 0;}
+
+#map {
+    height: 100%;
+    bottom: 0;
+    left: 340px;
+    position: absolute;
+    right: 0;
+}
+
+.sidebar {
+    background: white;
+    border: 1px solid #999;
+    border-radius: 3px;
+    height: 100%;
+    line-height: 35px;
+    padding: 10px 10px 30px 10px;
+    text-align: left;
+    width: 340px;
+}

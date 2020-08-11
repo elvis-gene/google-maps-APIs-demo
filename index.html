@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>First Google Map</title>
+
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+
+    <!--    BOOTSTRAP-->
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!--    <div class="container">-->
+    <div class="sidebar">
+        <h3 class="text-center">Quelques Endroits Visités à Cape Town</h3>
+
+        <div class="row text-center">
+            <button id="show-listings" type="button" class="btn btn-info">Show Listings</button>
+            <button id="hide-listings" type="button" class="btn btn-info">Hide Listings</button>
+        </div>
+
+    </div>
+
+        <!-- Place to put the map in the HTML-->
+        <div id="map"></div>
+<!--    </div>-->
+
+
+    <script>
+        // Create a map variable
+        let map;
+        let markers = [];
+
+        // Initialize the map
+        function initMap() {
+            // Constructor to create a new map JS object. Only requires 'center' and 'zoom' functionalities
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: -33.932200, lng: 18.422400},
+                zoom: 12
+            });
+
+            // FOR A SINGLE LOCATION/MARKER
+
+            let univ = {lat: -33.930520, lng: 18.432195};
+            let univMarker = new google.maps.Marker({
+                position: univ,
+                map: map,
+                animation: google.maps.Animation.DROP,
+                title:"L'université où J'suis allé"
+            });
+
+            let infoWindow = new google.maps.InfoWindow({
+                content: "Voiçi L'université où J'suis allé à Cape Town, en Afrique du Sud."
+            });
+
+            // Open the info window only when the univMarker is clicked
+            univMarker.addListener('click', function() {
+                infoWindow.open(map, univMarker); // market here represents the position where the window should be
+            });
+
+
+            // FOR MULTIPLE LOCATIONS/MARKERS
+
+            let locations = [
+                {title: 'Le Stade', location: {lat: -33.9047865, lng: 18.4076564}, about: 'Ce state avait hosté quelques matchs de la Coupe du Monde 2010'},
+                {title: 'Signal Hill', location: {lat: -33.9128967, lng: 18.3778763}, about:'Quelque part autour de Table Mountain'},
+                {title: 'Dieudos', location: {lat: -33.9743595, lng: 18.4497203}, about: 'Gloria avait vecu ici'},
+                {title: 'Jardin', location: {lat: -33.9876748, lng: 18.4224533}, about: 'Visite ce joli jardin'}
+            ]
+
+            let detailWindow = new google.maps.InfoWindow();
+            let bounds = new google.maps.LatLngBounds(); // Make map show all markers by adjusting the zoom automatically
+            let locListSize = locations.length;
+
+            for (let i = 0; i < locListSize; i++){
+                let position = locations[i].location;
+                let title = locations[i].title;
+                let about = locations[i].about;
+
+                marker = new google.maps.Marker({
+                    map: map,
+                    position: position,
+                    title: title,
+                    about: about,
+                    animation: google.maps.Animation.DROP,
+                    id: i
+                });
+
+                markers.push(marker);
+
+                // Extend the boundaries of the map for each marker
+                bounds.extend(marker.position);
+
+                // Create an click event for each univMarker
+                marker.addListener('click', function () {
+                    populateInfoWindow(this, detailWindow);
+                });
+
+                map.fitBounds(bounds);
+            }
+
+            function populateInfoWindow(marker, detailWindow) {
+                if (detailWindow.marker !== marker){ // If the same univMarker (which window is open) is clicked more than once, it will be ignored.
+                    detailWindow.marker = marker;
+                    detailWindow.setContent('<div>' + marker.about + '</div>');
+                    detailWindow.open(map, marker);
+
+                    // Clear univMarker when window is closed
+                    detailWindow.addListener('closeclick', function () {
+                        detailWindow.setMarker(null);
+                    });
+                }
+            }
+
+        }
+    </script>
+
+
+    <script
+            defer src="https://maps.googleapis.com/maps/api/js?v=weekly
+            &key=AIzaSyCNtShDIA-S4nYnikPfcrCSqwmxbPe5b60&v=3&callback=initMap">
+    </script>
+</body>
+</html>

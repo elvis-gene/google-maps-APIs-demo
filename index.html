@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>First Google Map</title>
+
+    <style type="text/css">
+        html, body { height: 100%; margin: 0; padding: 0; }
+        #map { height: 100%; }
+    </style>
+</head>
+<body>
+
+<!-- Place to put the map in the HTML-->
+    <div id="map">
+        <script>
+            // Create a map variable
+            let map;
+
+            // Initialize the map
+            function initMap(listener) {
+                // Constructor to create a new map JS object. Only requires 'center' and 'zoom' functionalities
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: -33.932200, lng: 18.422400},
+                    zoom: 15
+                });
+
+
+                let univ = {lat: -33.930520, lng: 18.432195};
+                let marker = new google.maps.Marker({
+                    position: univ,
+                    map: map,
+                    title:"L'university où J'suis allé"
+                });
+
+                let infoWindow = new google.maps.InfoWindow({
+                    content: "Voici L'university où J'suis allé, à Cape Town, South Africa."
+                });
+
+                // Open the info window only when the marker is clicked
+                marker.addListener('click', function() {
+                    infoWindow.open(map, marker); // market here represents the position where the window should be
+                });
+            }
+        </script>
+    </div>
+
+
+    <script
+        defer src="https://maps.googleapis.com/maps/api/js?v=weekly
+        &key=AIzaSyCNtShDIA-S4nYnikPfcrCSqwmxbPe5b60&v=3&callback=initMap">
+    </script>
+</body>
+</html>

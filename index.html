@@ -30,8 +30,8 @@
         <h3 class="text-center">Quelques Endroits Visités à Cape Town</h3>
 
         <div class="row text-center">
-            <button id="show-listings" type="button" class="btn btn-info">Show Listings</button>
-            <button id="hide-listings" type="button" class="btn btn-info">Hide Listings</button>
+            <input id="show-listings" type="button" class="btn btn-info" value="Show Listings">
+            <input id="hide-listings" type="button" class="btn btn-info" value="Hide Listings">
         </div>
 
     </div>
@@ -55,7 +55,7 @@
             });
 
             // FOR A SINGLE LOCATION/MARKER
-
+            // This marker will not be part of the markers list thus will have its separate code.
             let univ = {lat: -33.930520, lng: 18.432195};
             let univMarker = new google.maps.Marker({
                 position: univ,
@@ -84,7 +84,6 @@
             ]
 
             let detailWindow = new google.maps.InfoWindow();
-            let bounds = new google.maps.LatLngBounds(); // Make map show all markers by adjusting the zoom automatically
             let locListSize = locations.length;
 
             for (let i = 0; i < locListSize; i++){
@@ -93,7 +92,7 @@
                 let about = locations[i].about;
 
                 marker = new google.maps.Marker({
-                    map: map,
+                    // map: map,
                     position: position,
                     title: title,
                     about: about,
@@ -103,15 +102,13 @@
 
                 markers.push(marker);
 
-                // Extend the boundaries of the map for each marker
-                bounds.extend(marker.position);
-
                 // Create an click event for each univMarker
                 marker.addListener('click', function () {
                     populateInfoWindow(this, detailWindow);
                 });
 
-                map.fitBounds(bounds);
+                // map.fitBounds(bounds);
+
             }
 
             function populateInfoWindow(marker, detailWindow) {
@@ -127,6 +124,29 @@
                 }
             }
 
+            function showListings() {
+                let bounds = new google.maps.LatLngBounds(); // Make map show all markers by adjusting the zoom automatically
+
+                for (let i = 0; i < locListSize; i++){
+                    markers[i].setMap(map);
+                    bounds.extend(markers[i].position);
+                }
+
+                univMarker.setMap(map);
+
+                map.fitBounds(bounds);
+            }
+
+
+            function hideListings() {
+                for (let i = 0; i < locListSize; i++){
+                    markers[i].setMap(null);
+                }
+                univMarker.setMap(null);
+            }
+
+            document.getElementById('show-listings').addEventListener('click', showListings);
+            document.getElementById('hide-listings').addEventListener('click', hideListings);
         }
     </script>
 
